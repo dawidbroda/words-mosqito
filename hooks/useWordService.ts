@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import uuid from 'react-native-uuid';
 import { useEffect, useState } from 'react'
 
 export const useWordService = () => {
@@ -14,8 +15,6 @@ export const useWordService = () => {
     const listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
     
     if(listString) {
-      console.log(listString);
-      
       setList(JSON.parse(listString))
     }
   }
@@ -28,10 +27,28 @@ export const useWordService = () => {
   
     const newList: object[] = JSON.parse(listString)
     
-    newList.push({ word: word.toLowerCase(), translate: translate.toLowerCase(), bucket: 1 })
+    newList.push({ word: word.toLowerCase(), translate: translate.toLowerCase(), bucket: 1, id: uuid.v4() })
     await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(newList));
     setList(newList)
   }
 
-  return {list, addWord}
+  const removeWord = async (translate: string) => {
+    const currentListString = await AsyncStorage.getItem('words_mosquito_list')
+
+    if(currentListString) {
+      const currentList: [] = JSON.parse(currentListString)
+      const newList: object[] = []
+
+      currentList.forEach((item: any) => {
+        if(translate !== item.translate) {
+          newList.push(item)
+        }
+      })
+
+      await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(newList));
+      setList(newList)
+    }
+  }
+
+  return {list, addWord, removeWord}
 }
