@@ -32,7 +32,7 @@ export const useWordService = () => {
     setList(newList)
   }
 
-  const removeWord = async (translate: string) => {
+  const removeWord = async (id: any) => {
     const currentListString = await AsyncStorage.getItem('words_mosquito_list')
 
     if(currentListString) {
@@ -40,7 +40,7 @@ export const useWordService = () => {
       const newList: object[] = []
 
       currentList.forEach((item: any) => {
-        if(translate !== item.translate) {
+        if(id !== item.id) {
           newList.push(item)
         }
       })

@@ -14,7 +14,7 @@ export default function TabOneScreen() {
           {list && list?.map((item: any) => (
           <View style={styles.itemContainer}>
             <Text style={styles.listItem}>{item?.word}: {item?.translate}</Text><Pressable onPress={() => {
-              removeWord(item.translate)
+              removeWord(item.id)
             }}><Text style={styles.x}>X</Text></Pressable>
           </View>))}
         </View>
