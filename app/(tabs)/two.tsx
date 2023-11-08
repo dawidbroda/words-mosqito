@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 
 export default function TabTwoScreen() {
   const [current, setCurrent] = useState<any>()
+  const [listArr, setListArr] = useState<[]>()
+  const [bucket, setBucket] = useState<number>(1)
   const [answer, setAnswer] = useState<string>('')
   const [checkAnswer, setCheckAnswer] = useState<any>()
 
@@ -18,7 +20,9 @@ export default function TabTwoScreen() {
     
     if(listString) {
       const list: [] = JSON.parse(listString)
-      setCurrent(list[getRandomInt(list.length - 1)])
+      setListArr(list)
+      const sortList: any = list?.filter((x: any) => x.bucket === bucket)
+      setCurrent(sortList[getRandomInt(sortList.length - 1)])
     }
   }
 
@@ -26,9 +30,45 @@ export default function TabTwoScreen() {
     getRandomWord()
   },[])
 
+  useEffect(() => {
+    getRandomWord()
+  }, [bucket])
+
+  const getCountInBucket = (bucketNumber: number) => {
+    const sortList = listArr?.filter((x: any) => x.bucket === bucketNumber)
+    return sortList?.length
+  }
+
+  const updateBucket = async (toBucket: number, id: any) => {
+    let listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
+    if(!listString?.length) {
+      listString = '[]'
+    }
+  
+    const newList: object[] = JSON.parse(listString)
+
+    const updatedList = newList.map((item: any) => {
+      return item.id === id ? { ...item, bucket: toBucket } : item
+    })
+    
+    await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(updatedList));
+    alert('Zaktualizowano!')
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{current?.word}</Text>
+      <View style={styles.boxContainer}>
+        <Pressable onPress={() => setBucket(1)}><View style={{...styles.box, backgroundColor: bucket === 1 ? 'green': 'white'}}><Text>{getCountInBucket(1)}</Text></View></Pressable>
+        <Pressable onPress={() => setBucket(2)}><View style={{...styles.box, backgroundColor: bucket === 2 ? 'green': 'white'}}><Text>{getCountInBucket(2)}</Text></View></Pressable>
+        <Pressable onPress={() => setBucket(3)}><View style={{...styles.box, backgroundColor: bucket === 3 ? 'green': 'white'}}><Text>{getCountInBucket(3)}</Text></View></Pressable>
+        <Pressable onPress={() => setBucket(4)}><View style={{...styles.box, backgroundColor: bucket === 4 ? 'green': 'white'}}><Text>{getCountInBucket(4)}</Text></View></Pressable>
+        <Pressable onPress={() => setBucket(5)}><View style={{...styles.box, backgroundColor: bucket === 5 ? 'green': 'white'}}><Text>{getCountInBucket(5)}</Text></View></Pressable>
+      </View>
+      <View style={styles.titleContainer}>
+        <Pressable onPress={() => updateBucket(1, current.id) }><Text style={styles.title}>-</Text></Pressable>
+        <Text style={styles.title}>{current?.word}</Text>
+        <Pressable onPress={() => updateBucket(bucket + 1, current.id)}><Text style={styles.title}>+</Text></Pressable>
+      </View>
       {checkAnswer && <Text style={{
         fontSize: 20,
         fontWeight: 'bold',
@@ -51,7 +91,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   title: {
     fontSize: 25,
@@ -82,5 +122,26 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: 'black',
     marginTop: 10
+  },
+  boxContainer: {
+    width: 350,
+    height: 50,
+    marginBottom: 150,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  box: {
+    width: 50,
+    height: 50,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  titleContainer: {
+    width: 300,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 });
