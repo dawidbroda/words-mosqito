@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "809268023040",
+    "project_id": "words-mosqito",
+    "storage_bucket": "words-mosqito.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809268023040:android:54530e6acf54a52503ede5",
+        "android_client_info": {
+          "package_name": "com.azyl777.wordsmosqito"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsFwnW80gRkBUJh107tLG0HTDvu53nZzs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,7 +8,7 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lista {list?.length}</Text>
+      <Text style={styles.title}>Lista {list?.length}/{(list?.filter((i: any) => i?.bucket === 6)).length}</Text>
       <ScrollView>
         <View style={{ flex: 1, flexDirection: 'column'}}>
           {list && list?.map((item: any) => (

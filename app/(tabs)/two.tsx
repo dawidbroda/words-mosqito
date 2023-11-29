@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import { useEffect, useState } from 'react';
+import { syncDatabase } from '../../hooks/syncDatabaseService';
 
 export default function TabTwoScreen() {
   const [current, setCurrent] = useState<any>()
@@ -52,6 +53,7 @@ export default function TabTwoScreen() {
     })
     
     await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(updatedList));
+    syncDatabase(JSON.stringify(updatedList))
     alert('Zaktualizowano!')
   }
 

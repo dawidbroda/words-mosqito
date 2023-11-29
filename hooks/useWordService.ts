@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import uuid from 'react-native-uuid';
 import { useEffect, useState } from 'react'
+import { syncDatabase } from './syncDatabaseService';
 
 export const useWordService = () => {
   const [list, setList] = useState<object[]>([])
@@ -29,6 +30,7 @@ export const useWordService = () => {
     
     newList.push({ word: word.toLowerCase(), translate: translate.toLowerCase(), bucket: 1, id: uuid.v4() })
     await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(newList));
+    syncDatabase(JSON.stringify(newList))
     setList(newList)
   }
 
@@ -46,6 +48,7 @@ export const useWordService = () => {
       })
 
       await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(newList));
+      syncDatabase(JSON.stringify(newList))
       setList(newList)
     }
   }

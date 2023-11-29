@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useState } from 'react'
+import { syncDatabase } from './syncDatabaseService'
 
 export const useListStringService = () => {
   const [list, setList] = useState<string>()
@@ -20,6 +21,7 @@ export const useListStringService = () => {
 
   const saveListString = async (listString: string) => {    
     await AsyncStorage.setItem('words_mosquito_list', listString);
+    syncDatabase(listString)
     setList(listString)
   }
 
