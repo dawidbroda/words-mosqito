@@ -8,7 +8,9 @@ import { useListStringService } from '../../hooks/useListStringService';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import * as Clipboard from 'expo-clipboard';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BackStageScreen() {
   const { list, saveListString } = useListStringService()
@@ -26,6 +28,26 @@ export default function BackStageScreen() {
       setListString(`${e}`)
     }
   }
+
+  const copyToClipboard = async () => {
+    const listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
+    
+    if(listString) {
+      const list: [] = JSON.parse(listString)
+      const sortList: any[] = list?.filter((x: any) => x.bucket < 3).map((item: any) => item.translate)
+      
+      await Clipboard.setStringAsync(`
+        Wymyśl krótkie zdanie w języku polskim które będzie zawierało jedno ze słów:
+        ${sortList.join(', ')} i będzie
+        w jednym z czasów: past simple, present simple, future simple, past continuous, 
+        present continuous, future continuous, past perfect simple, present perfect simple, 
+        future perfect simple, past perfect continuous, present perfect continuous lub 
+        future present continuous. Wybierz formę, twierdzącą, przeczącą lub pytającą I 
+        poinformuj który czas wybrałeś
+      `);
+      alert('prompt was copied')
+    }
+  };
 
   async function registerForPushNotificationsAsync() {
     let token;
@@ -69,6 +91,9 @@ export default function BackStageScreen() {
       <Pressable style={styles.button} onPress={() => {
         registerForPushNotificationsAsync()
       }}><Text style={{ color: 'white'}}>Notifi</Text></Pressable>
+      <Pressable style={styles.button} onPress={() => {
+        copyToClipboard()
+      }}><Text style={{ color: 'white'}}>Get prompt</Text></Pressable>
     </View>
   );
 }
