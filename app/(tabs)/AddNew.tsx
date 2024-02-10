@@ -8,16 +8,38 @@ import { useState } from 'react';
 export default function AddNewScreen() {
   const [word, setWord] = useState<string>('')
   const [translate, setTranslate] = useState<string>('')
+  const [tags, setTags] = useState<string>('')
   const {list, addWord} = useWordService()
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder='pl' value={word} onChangeText={setWord} />
-      <TextInput style={styles.input} placeholder='ang' value={translate} onChangeText={setTranslate}/>
+      <TextInput
+        multiline={true}
+        numberOfLines={4}
+        style={styles.input} 
+        placeholder='pl' 
+        value={word} 
+        onChangeText={setWord} 
+      />
+      <TextInput 
+        multiline={true}
+        numberOfLines={4}
+        style={styles.input} 
+        placeholder='ang' 
+        value={translate} 
+        onChangeText={setTranslate}
+      />
+      <TextInput 
+        style={styles.input} 
+        placeholder='tags' 
+        value={tags} 
+        onChangeText={setTags}
+      />
       <Pressable style={styles.button} onPress={() => {
-        addWord(word, translate)
+        addWord(word, translate, tags)
         setWord('')
         setTranslate('')
+        setTags('')
       }}><Text style={{ color: 'white'}}>Add</Text></Pressable>
     </View>
   );
@@ -40,7 +62,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 300,
-    height: 40,
+    height:200, 
+    textAlignVertical: 'top',
     fontSize: 25,
     borderStyle: 'solid',
     borderWidth: 1,

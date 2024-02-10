@@ -4,6 +4,7 @@ import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import { useEffect, useState } from 'react';
 import { syncDatabase } from '../../hooks/syncDatabaseService';
+import axiosService from '../../commons/axiosService';
 
 export default function Training() {
   const [current, setCurrent] = useState<any>()
@@ -16,26 +17,41 @@ export default function Training() {
     return Math.floor(Math.random() * (max - 0 + 1));
   }
 
-  const getRandomBucket = () => {
-    const random = getRandomInt(2)
-    if(random === 0) {
-      return 6
+  const getSentence = async (tags: []) => {
+    const selectWord = tags[getRandomInt(tags?.length-1)]
+    try {
+      const response = await axiosService.get(`https://ng10toqea3.execute-api.eu-west-1.amazonaws.com/default/DB-sentences-creator2?w=${selectWord}`)
+      return response?.data
+    } catch (e) {
+      alert(e)
     }
+  }
 
-    return random
+  const selectBucket = (random: number) => {
+      if(random === 0) {
+        return 6
+      } else {
+        return random
+      }
   }
 
   const getRandomWord = async () => {
     const listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
-    
+
     if(listString) {
       const list: [] = JSON.parse(listString)
       setListArr(list)
-
-      const bucket = getRandomBucket()
+      const bucket = selectBucket(getRandomInt(2))
       
       const sortList: any = list?.filter((x: any) => x.bucket === bucket)
-      setCurrent(sortList[getRandomInt(sortList.length - 1)])
+      const word = sortList[getRandomInt(sortList.length - 1)]
+
+      if(word.tags) {
+        word.sentence = await getSentence(word.tags)
+        setCurrent(word)
+      } else {
+        getRandomWord()
+      }
     }
   }
 
@@ -69,7 +85,7 @@ export default function Training() {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Pressable onPress={() => updateBucket(1, current.id) }><Text style={styles.title}>-</Text></Pressable>
-        <Text style={styles.title}>{current?.word} :</Text>
+        <Text style={styles.title}>{current?.sentence} :</Text>
         <Text style={styles.title}>{current?.bucket}</Text>
       </View>
       {checkAnswer && <Text style={{
@@ -96,7 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   title: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   separator: {

@@ -14,13 +14,13 @@ export const useWordService = () => {
     //Cleaning list
     // await AsyncStorage.removeItem('words_mosquito_list');
     const listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
-    
+
     if(listString) {
       setList(JSON.parse(listString))
     }
   }
 
-  const addWord = async (word: string, translate: string) => {
+  const addWord = async (word: string, translate: string, tags: string) => {
     let listString: string | null = await AsyncStorage.getItem('words_mosquito_list')
     if(!listString?.length) {
       listString = '[]'
@@ -28,7 +28,7 @@ export const useWordService = () => {
   
     const newList: object[] = JSON.parse(listString)
     
-    newList.push({ word: word.toLowerCase(), translate: translate.toLowerCase(), bucket: 1, id: uuid.v4() })
+    newList.push({ word: word.toLowerCase(), translate: translate.toLowerCase(), tags: tags.split(','), bucket: 1, id: uuid.v4() })
     await AsyncStorage.setItem('words_mosquito_list', JSON.stringify(newList));
     syncDatabase(JSON.stringify(newList))
     setList(newList)

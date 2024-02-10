@@ -9,7 +9,6 @@ export default function TabTwoScreen() {
   const [current, setCurrent] = useState<any>()
   const [listArr, setListArr] = useState<[]>()
   const [bucket, setBucket] = useState<number>(1)
-  const [answer, setAnswer] = useState<string>('')
   const [checkAnswer, setCheckAnswer] = useState<any>()
 
   const getRandomInt = (max: any) => {
@@ -74,15 +73,13 @@ export default function TabTwoScreen() {
       {checkAnswer && <Text style={{
         fontSize: 20,
         fontWeight: 'bold',
-        color: current.translate === answer.toLowerCase() ? 'green' : 'red'
+        color: 'green'
       }}>{current?.translate}</Text>}
-      <TextInput style={styles.input} placeholder='wpisz tłumaczenie...' value={answer} onChangeText={setAnswer} />
       <Pressable style={styles.button} onPress={() => {
-        setCheckAnswer(true)
+        setCheckAnswer((old: any) => !old)
       }}><Text style={{ color: 'white'}}>sprawdz</Text></Pressable>
       {checkAnswer && <Pressable style={styles.button} onPress={() => {
         getRandomWord()
-        setAnswer('')
         setCheckAnswer(false)
       }}><Text style={{ color: 'white'}}>następne</Text></Pressable>}
     </View>

@@ -1,9 +1,6 @@
 import axios from 'axios'
 
-const axiosService = axios.create({
-  // baseURL: 'http://192.168.1.6:4050/api',
-  baseURL: 'http://185.180.206.128:4050/api',
-})
+const axiosService = axios.create()
 
 axiosService.interceptors.request.use((config) => {
   // const token = getToken()
